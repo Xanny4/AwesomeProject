@@ -1,20 +1,40 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { NavigationContainer } from '@react-navigation/native';
+import SignUpScreen from './screens/SignUpScreen';
+import AccountsScreen from './screens/AccountsScreen';
+import AccountInfoScreen from './screens/AccountInfoScreen';
 
-export default function App() {
+const Tab = createBottomTabNavigator();
+const Stack = createStackNavigator();
+
+const AccountStack = ({ accounts }) => (
+  <Stack.Navigator>
+    <Stack.Screen name="Account" options={{ headerShown: false }}>
+      {() => <AccountsScreen accounts={accounts} />}
+    </Stack.Screen>
+    <Stack.Screen name="AccountInfo" options={{ headerTitle: "Account Information" }}>
+      {(props) => <AccountInfoScreen {...props} />}
+    </Stack.Screen>
+  </Stack.Navigator>
+);
+
+const App = () => {
+  const [accounts, setAccounts] = useState([]);
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="SignUp">
+          {() => <SignUpScreen accounts={accounts} setAccounts={setAccounts} />}
+        </Tab.Screen>
+        <Tab.Screen name="Accounts">
+          {() => <AccountStack accounts={accounts} />}
+        </Tab.Screen>
+      </Tab.Navigator>
+    </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App;
